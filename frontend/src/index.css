@@ -52,6 +52,9 @@
 
 body {
   margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f8;
+  color: #222;
 }
 
 #root {
@@ -108,4 +111,29 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+input {
+  padding: 0.5rem;
+  width: 280px;
+  margin-top: 0.25rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
