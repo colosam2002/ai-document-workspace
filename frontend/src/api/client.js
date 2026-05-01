@@ -110,3 +110,20 @@ export async function deleteDocument(documentId) {
 
   return response.json();
 }
+
+export async function getDocumentDetail(documentId) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/documents/${documentId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not fetch document detail");
+  }
+
+  return response.json();
+}

@@ -4,7 +4,7 @@ Full-stack AI workspace to upload documents, search knowledge, and chat with fil
 
 ## Current Status
 
-Week 1 completed:
+First git push:
 
 - FastAPI backend
 - React frontend
@@ -14,7 +14,7 @@ Week 1 completed:
 - Protected dashboard
 - Logout flow
 
-Week 2 completed:
+Second git push:
 
 - User authentication
 - Protected dashboard
@@ -23,6 +23,15 @@ Week 2 completed:
 - Uploaded files stored locally
 - User-specific document listing
 - User-specific document deletion
+
+Third git push:
+
+- Text extraction from `.txt` files
+- Text extraction from basic PDFs
+- Processing status per document
+- Document detail view
+- Extracted text visible from frontend
+- User isolation for document detail
 
 ## Stack
 
@@ -50,7 +59,7 @@ npm run dev
 
 ## Next Steps
 
-- Extract text from uploaded documents
-- Support PDF parsing
-- Store extracted text in database
-- Prepare documents for chunking and embeddings
+- Split extracted text into chunks
+- Generate embeddings for document chunks
+- Store embeddings in PostgreSQL
+- Implement semantic search over user documents

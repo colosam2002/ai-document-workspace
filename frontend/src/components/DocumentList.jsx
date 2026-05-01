@@ -1,4 +1,5 @@
 import { deleteDocument } from "../api/client";
+import { Link } from "react-router-dom";
 
 function DocumentList({ documents, onDeleteSuccess }) {
   async function handleDelete(documentId) {
@@ -53,9 +54,13 @@ function DocumentList({ documents, onDeleteSuccess }) {
       <ul>
         {documents.map((document) => (
           <li key={document.id} style={{ marginBottom: "1rem" }}>
-            <strong>{document.filename}</strong>
+            <Link to={`/documents/${document.id}`}>
+              <strong>{document.filename}</strong>
+            </Link>
             <br />
             <span>Type: {document.content_type || "unknown"}</span>
+            <br />
+            <span>Status: {document.processing_status}</span>
             <br />
             <span>
               Uploaded: {new Date(document.created_at).toLocaleString()}

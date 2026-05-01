@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -27,14 +27,18 @@ class DocumentDB(Base):
     filename = Column(String, nullable=False)
     file_path = Column(String, nullable=False)
     content_type = Column(String, nullable=True)
+
+    extracted_text = Column(Text, nullable=True)
+    processing_status = Column(String, default="uploaded", nullable=False)
+
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
-        nullable=False
+        nullable=False,
     )
 
     owner = relationship(
         "UserDB",
-        back_populates="documents"
+        back_populates="documents",
     )

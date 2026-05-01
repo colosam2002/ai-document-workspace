@@ -23,6 +23,18 @@ class DocumentResponse(BaseModel):
     id: int
     filename: str
     content_type: str | None
+    processing_status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class DocumentDetailResponse(BaseModel):
+    id: int
+    filename: str
+    content_type: str | None
+    processing_status: str
+    extracted_text: str | None
     created_at: datetime
 
     class Config:
