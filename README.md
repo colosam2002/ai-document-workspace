@@ -14,6 +14,16 @@ Week 1 completed:
 - Protected dashboard
 - Logout flow
 
+Week 2 completed:
+
+- User authentication
+- Protected dashboard
+- Document upload from frontend
+- Document metadata stored in PostgreSQL
+- Uploaded files stored locally
+- User-specific document listing
+- User-specific document deletion
+
 ## Stack
 
 - FastAPI
@@ -38,8 +48,9 @@ npm install
 npm run dev
 ```
 
-## Next steps
-Document upload
-Document metadata
-Document list
-File storage
+## Next Steps
+
+- Extract text from uploaded documents
+- Support PDF parsing
+- Store extracted text in database
+- Prepare documents for chunking and embeddings

@@ -3,7 +3,11 @@ backend/venv/
 __pycache__/
 *.pyc
 *.pyo
+
+# Environment files
 .env
+backend/.env
+frontend/.env
 
 # Uploads
 backend/uploads/

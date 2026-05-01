@@ -1,21 +1,36 @@
 import { useEffect, useState } from "react";
-import { getCurrentUser } from "../api/client";
+import { getCurrentUser, getDocuments } from "../api/client";
+import DocumentUploader from "../components/DocumentUploader";
+import DocumentList from "../components/DocumentList";
 
 function DashboardPage() {
   const [user, setUser] = useState(null);
+  const [documents, setDocuments] = useState([]);
   const [error, setError] = useState("");
 
+  async function loadDocuments() {
+    try {
+      const data = await getDocuments();
+      setDocuments(data);
+    } catch (error) {
+      setError("Could not load documents");
+    }
+  }
+
   useEffect(() => {
-    async function loadUser() {
+    async function loadData() {
       try {
-        const data = await getCurrentUser();
-        setUser(data);
+        const userData = await getCurrentUser();
+        setUser(userData);
+
+        const documentsData = await getDocuments();
+        setDocuments(documentsData);
       } catch (error) {
-        setError("Could not load user");
+        setError("Could not load dashboard data");
       }
     }
 
-    loadUser();
+    loadData();
   }, []);
 
   return (
@@ -38,11 +53,13 @@ function DashboardPage() {
         <p>
           Upload documents, search knowledge, and chat with your files using AI.
         </p>
-
-        <p style={{ marginTop: "1rem", color: "#666" }}>
-          Document upload will be added in Week 2.
-        </p>
       </div>
+
+      <DocumentUploader onUploadSuccess={loadDocuments} />
+      <DocumentList
+        documents={documents}
+        onDeleteSuccess={loadDocuments}
+      />
     </section>
   );
 }

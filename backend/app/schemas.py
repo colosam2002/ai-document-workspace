@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 
@@ -17,3 +18,12 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class DocumentResponse(BaseModel):
+    id: int
+    filename: str
+    content_type: str | None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
