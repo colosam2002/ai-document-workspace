@@ -33,6 +33,15 @@ Third git push:
 - Extracted text visible from frontend
 - User isolation for document detail
 
+Fourth git push:
+
+- Document chunking
+- Chunk storage in PostgreSQL
+- OpenAI embeddings per chunk
+- Semantic search over document chunks
+- User-specific retrieval
+- Protected `/documents/search` endpoint
+
 ## Stack
 
 - FastAPI
@@ -59,7 +68,7 @@ npm run dev
 
 ## Next Steps
 
-- Split extracted text into chunks
-- Generate embeddings for document chunks
-- Store embeddings in PostgreSQL
-- Implement semantic search over user documents
+- Build document chat endpoint
+- Generate answers using retrieved chunks
+- Return sources with answers
+- Add chat UI in the frontend

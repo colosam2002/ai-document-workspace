@@ -1,13 +1,23 @@
 import os
+import json
+
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_current_user, get_db
-from app.models_db import DocumentDB, UserDB
-from app.schemas import DocumentResponse, DocumentDetailResponse
+from app.models_db import DocumentDB, DocumentChunkDB, UserDB
+from app.schemas import (
+    DocumentResponse,
+    DocumentDetailResponse,
+    DocumentSearchRequest,
+    DocumentSearchResponse,
+)
 from app.services.extraction_service import extract_text
+from app.services.chunking_service import split_text_into_chunks
+from app.services.embedding_service import create_embedding
+from app.services.rag_service import search_relevant_chunks
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -15,6 +25,25 @@ UPLOAD_DIR = "uploads"
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+
+def create_chunks_for_document(
+    db: Session,
+    document: DocumentDB,
+    text: str,
+) -> None:
+    chunks = split_text_into_chunks(text)
+
+    for index, chunk_content in enumerate(chunks):
+        embedding = create_embedding(chunk_content)
+
+        chunk = DocumentChunkDB(
+            document_id=document.id,
+            chunk_index=index,
+            content=chunk_content,
+            embedding=json.dumps(embedding),
+        )
+
+        db.add(chunk)
 
 @router.post("/upload", response_model=DocumentResponse)
 def upload_document(
@@ -67,6 +96,16 @@ def upload_document(
         db.commit()
         db.refresh(new_document)
 
+        if new_document.processing_status == "processed" and new_document.extracted_text:
+            create_chunks_for_document(
+                db=db,
+                document=new_document,
+                text=new_document.extracted_text,
+            )
+
+            db.commit()
+            db.refresh(new_document)
+
         return new_document
 
     except Exception as e:
@@ -76,6 +115,23 @@ def upload_document(
             detail="Error uploading document",
         )
     
+
+@router.post("/search", response_model=DocumentSearchResponse)
+def search_documents(
+    data: DocumentSearchRequest,
+    db: Session = Depends(get_db),
+    current_user: UserDB = Depends(get_current_user),
+):
+    results = search_relevant_chunks(
+        db=db,
+        query=data.query,
+        current_user=current_user,
+        top_k=data.top_k,
+    )
+
+    return {"results": results}
+
+
 @router.get("", response_model=list[DocumentResponse])
 def list_documents(
     db: Session = Depends(get_db),

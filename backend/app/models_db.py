@@ -16,7 +16,7 @@ class UserDB(Base):
     documents = relationship(
         "DocumentDB",
         back_populates="owner",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
 
 
@@ -41,4 +41,39 @@ class DocumentDB(Base):
     owner = relationship(
         "UserDB",
         back_populates="documents",
+    )
+
+    chunks = relationship(
+        "DocumentChunkDB",
+        back_populates="document",
+        cascade="all, delete-orphan",
+    )
+
+
+class DocumentChunkDB(Base):
+    __tablename__ = "document_chunks"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    document_id = Column(
+        Integer,
+        ForeignKey("documents.id"),
+        nullable=False,
+        index=True,
+    )
+
+    chunk_index = Column(Integer, nullable=False)
+    content = Column(Text, nullable=False)
+
+    embedding = Column(Text, nullable=True)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    document = relationship(
+        "DocumentDB",
+        back_populates="chunks",
     )
