@@ -42,6 +42,15 @@ Fourth git push:
 - User-specific retrieval
 - Protected `/documents/search` endpoint
 
+Fifth git push:
+
+- RAG chat endpoint
+- Context-aware answers using uploaded documents
+- Source chunks returned with each answer
+- Frontend chat page
+- Loading and error states
+- User-specific document chat
+
 ## Stack
 
 - FastAPI
@@ -68,7 +77,8 @@ npm run dev
 
 ## Next Steps
 
-- Build document chat endpoint
-- Generate answers using retrieved chunks
-- Return sources with answers
-- Add chat UI in the frontend
+- Store chat history
+- Improve workspace UX
+- Add document selection for chat
+- Add summaries and advanced document actions
+- Prepare for deployment

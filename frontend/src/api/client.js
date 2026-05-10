@@ -127,3 +127,25 @@ export async function getDocumentDetail(documentId) {
 
   return response.json();
 }
+
+export async function askDocuments(question, topK = 5) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/documents/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      question: question,
+      top_k: topK,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not ask documents");
+  }
+
+  return response.json();
+}

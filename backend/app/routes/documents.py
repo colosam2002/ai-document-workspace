@@ -13,11 +13,16 @@ from app.schemas import (
     DocumentDetailResponse,
     DocumentSearchRequest,
     DocumentSearchResponse,
+    DocumentChatRequest,
+    DocumentChatResponse,
 )
 from app.services.extraction_service import extract_text
 from app.services.chunking_service import split_text_into_chunks
 from app.services.embedding_service import create_embedding
-from app.services.rag_service import search_relevant_chunks
+from app.services.rag_service import (
+    search_relevant_chunks,
+    answer_question_with_documents,
+)
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -131,6 +136,20 @@ def search_documents(
 
     return {"results": results}
 
+@router.post("/chat", response_model=DocumentChatResponse)
+def chat_with_documents(
+    data: DocumentChatRequest,
+    db: Session = Depends(get_db),
+    current_user: UserDB = Depends(get_current_user),
+):
+    result = answer_question_with_documents(
+        db=db,
+        question=data.question,
+        current_user=current_user,
+        top_k=data.top_k,
+    )
+
+    return result
 
 @router.get("", response_model=list[DocumentResponse])
 def list_documents(
@@ -199,3 +218,4 @@ def delete_document(
         os.remove(file_path)
 
     return {"message": "Document deleted successfully"}
+

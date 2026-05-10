@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models_db import DocumentChunkDB, DocumentDB, UserDB
 from app.services.embedding_service import create_embedding
+from app.services.ai_service import generate_answer_from_context
 
 
 def cosine_similarity(vec1: list[float], vec2: list[float]) -> float:
@@ -56,3 +57,50 @@ def search_relevant_chunks(
     scored_chunks.sort(key=lambda item: item["score"], reverse=True)
 
     return scored_chunks[:top_k]
+
+def build_context_from_chunks(chunks: list[dict]) -> str:
+    context_parts = []
+
+    for index, chunk in enumerate(chunks, start=1):
+        context_parts.append(
+            f"""
+Source {index}
+Document: {chunk["filename"]}
+Chunk index: {chunk["chunk_index"]}
+Content:
+{chunk["content"]}
+"""
+        )
+
+    return "\n---\n".join(context_parts)
+
+def answer_question_with_documents(
+    db: Session,
+    question: str,
+    current_user: UserDB,
+    top_k: int = 5,
+) -> dict:
+    relevant_chunks = search_relevant_chunks(
+        db=db,
+        query=question,
+        current_user=current_user,
+        top_k=top_k,
+    )
+
+    if not relevant_chunks:
+        return {
+            "answer": "I don't have enough information in your documents to answer that question.",
+            "sources": [],
+        }
+
+    context = build_context_from_chunks(relevant_chunks)
+
+    answer = generate_answer_from_context(
+        question=question,
+        context=context,
+    )
+
+    return {
+        "answer": answer,
+        "sources": relevant_chunks,
+    }
