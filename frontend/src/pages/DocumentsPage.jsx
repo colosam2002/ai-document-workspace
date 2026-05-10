@@ -19,9 +19,9 @@ function DocumentsPage() {
       const data = await getDocuments();
       setDocuments(data);
     } catch (error) {
-      setMessage("Could not load documents.");
-    } finally {
-      setIsLoading(false);
+    setMessage(error.message || "Could not load documents.");
+    }finally {
+        setIsLoading(false);
     }
   }
 

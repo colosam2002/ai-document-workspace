@@ -1,7 +1,15 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL) {
+  throw new Error("VITE_API_URL is not configured");
+}
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
+
+  if (!token) {
+    return {};
+  }
 
   return {
     Authorization: `Bearer ${token}`,
@@ -52,11 +60,7 @@ export async function getCurrentUser() {
     headers: getAuthHeaders(),
   });
 
-  if (!response.ok) {
-    throw new Error("Could not fetch current user");
-  }
-
-  return response.json();
+  return handleResponse(response, "Could not fetch current user");
 }
 
 // Documents
@@ -67,11 +71,7 @@ export async function getDocuments() {
     headers: getAuthHeaders(),
   });
 
-  if (!response.ok) {
-    throw new Error("Could not fetch documents");
-  }
-
-  return response.json();
+  return handleResponse(response, "Could not fetch documents");
 }
 
 export async function getDocumentDetail(documentId) {
@@ -80,11 +80,7 @@ export async function getDocumentDetail(documentId) {
     headers: getAuthHeaders(),
   });
 
-  if (!response.ok) {
-    throw new Error("Could not fetch document detail");
-  }
-
-  return response.json();
+  return handleResponse(response, "Could not fetch document detail");
 }
 
 export async function uploadDocument(file) {
@@ -110,11 +106,7 @@ export async function deleteDocument(documentId) {
     headers: getAuthHeaders(),
   });
 
-  if (!response.ok) {
-    throw new Error("Could not delete document");
-  }
-
-  return response.json();
+  return handleResponse(response, "Could not delete document");
 }
 
 // AI / RAG
@@ -138,11 +130,7 @@ export async function askDocuments(question, topK = 5, documentId = null) {
     body: JSON.stringify(body),
   });
 
-  if (!response.ok) {
-    throw new Error("Could not ask documents");
-  }
-
-  return response.json();
+  return handleResponse(response, "Could not ask documents");
 }
 
 export async function generateDocumentSummary(documentId) {
@@ -151,8 +139,17 @@ export async function generateDocumentSummary(documentId) {
     headers: getAuthHeaders(),
   });
 
+  return handleResponse(response, "Could not generate document summary");
+}
+
+async function handleResponse(response, errorMessage) {
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    throw new Error("Session expired. Please log in again.");
+  }
+
   if (!response.ok) {
-    throw new Error("Could not generate document summary");
+    throw new Error(errorMessage);
   }
 
   return response.json();

@@ -26,7 +26,7 @@ function DocumentDetailPage() {
         const data = await getDocumentDetail(documentId);
         setDocument(data);
       } catch (error) {
-        setError("Could not load document.");
+        setError(error.message || "Could not load document.");
       }
     }
 
@@ -43,7 +43,7 @@ function DocumentDetailPage() {
 
       setSummary(data.summary);
     } catch (error) {
-      setSummaryError("Could not generate summary for this document.");
+      setSummaryError(error.message || "Could not generate summary for this document.");
     } finally {
       setIsGeneratingSummary(false);
     }

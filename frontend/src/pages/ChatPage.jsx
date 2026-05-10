@@ -50,9 +50,7 @@ function ChatPage() {
         newMessage,
         ]);
     } catch (error) {
-      setMessage(
-        "Something went wrong while searching your documents. Please try again."
-      );
+    setMessage(error.message || "Something went wrong while searching your documents.");
     } finally {
       setIsLoading(false);
     }

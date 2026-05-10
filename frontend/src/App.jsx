@@ -13,7 +13,13 @@ function App() {
     <>
       <Navbar />
 
-      <main style={{ padding: "2rem" }}>
+      <main
+        style={{
+          maxWidth: "1100px",
+          margin: "0 auto",
+          padding: "2rem",
+        }}
+      >
         <Routes>
           <Route
             path="/"

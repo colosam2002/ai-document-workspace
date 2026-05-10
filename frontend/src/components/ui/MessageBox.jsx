@@ -28,11 +28,12 @@ function MessageBox({ type = "info", children }) {
     <div
       style={{
         marginTop: "1rem",
-        padding: "0.75rem 1rem",
+        padding: "0.8rem 1rem",
         border: `1px solid ${style.borderColor}`,
         borderRadius: "10px",
         backgroundColor: style.backgroundColor,
         color: style.color,
+        lineHeight: "1.5",
       }}
     >
       {children}

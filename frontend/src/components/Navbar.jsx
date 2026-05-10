@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -10,23 +10,80 @@ function Navbar() {
   }
 
   return (
-    <nav
+    <header
       style={{
-        display: "flex",
-        gap: "1rem",
-        padding: "1rem",
+        backgroundColor: "white",
         borderBottom: "1px solid #ddd",
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
       }}
     >
-      {token && <Link to="/">Dashboard</Link>}
-      {token && <Link to="/documents">Documents</Link>}
-      {token && <Link to="/chat">Chat</Link>}
+      <nav
+        style={{
+          maxWidth: "1100px",
+          margin: "0 auto",
+          padding: "1rem 2rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+        }}
+      >
+        <Link
+          to="/"
+          style={{
+            fontWeight: "bold",
+            fontSize: "1.1rem",
+            color: "#111827",
+            textDecoration: "none",
+          }}
+        >
+          AI Document Workspace
+        </Link>
 
-      {!token && <Link to="/login">Login</Link>}
-      {!token && <Link to="/register">Register</Link>}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+          }}
+        >
+          {token && (
+            <>
+              <NavItem to="/">Dashboard</NavItem>
+              <NavItem to="/documents">Documents</NavItem>
+              <NavItem to="/chat">Chat</NavItem>
 
-      {token && <button onClick={handleLogout}>Logout</button>}
-    </nav>
+              <button onClick={handleLogout}>Logout</button>
+            </>
+          )}
+
+          {!token && (
+            <>
+              <NavItem to="/login">Login</NavItem>
+              <NavItem to="/register">Register</NavItem>
+            </>
+          )}
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+function NavItem({ to, children }) {
+  return (
+    <NavLink
+      to={to}
+      end={to === "/"}
+      style={({ isActive }) => ({
+        color: isActive ? "#2563eb" : "#374151",
+        fontWeight: isActive ? "600" : "400",
+        textDecoration: "none",
+      })}
+    >
+      {children}
+    </NavLink>
   );
 }
 
