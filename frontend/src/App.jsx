@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import DocumentDetailPage from "./pages/DocumentDetailPage";
 import ChatPage from "./pages/ChatPage";
+import DocumentsPage from "./pages/DocumentsPage";
 
 function App() {
   return (
@@ -19,6 +20,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/documents"
+            element={
+              <ProtectedRoute>
+                <DocumentsPage />
               </ProtectedRoute>
             }
           />

@@ -19,6 +19,7 @@ function Navbar() {
       }}
     >
       {token && <Link to="/">Dashboard</Link>}
+      {token && <Link to="/documents">Documents</Link>}
       {token && <Link to="/chat">Chat</Link>}
 
       {!token && <Link to="/login">Login</Link>}

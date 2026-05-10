@@ -1,15 +1,22 @@
 const API_URL = "http://127.0.0.1:8000";
 
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+// Auth
+
 export async function registerUser(username, password) {
   const response = await fetch(`${API_URL}/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      username,
-      password,
-    }),
+    body: JSON.stringify({ username, password }),
   });
 
   if (!response.ok) {
@@ -40,13 +47,9 @@ export async function loginUser(username, password) {
 }
 
 export async function getCurrentUser() {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${API_URL}/me`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -56,17 +59,41 @@ export async function getCurrentUser() {
   return response.json();
 }
 
-export async function uploadDocument(file) {
-  const token = localStorage.getItem("token");
+// Documents
 
+export async function getDocuments() {
+  const response = await fetch(`${API_URL}/documents`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not fetch documents");
+  }
+
+  return response.json();
+}
+
+export async function getDocumentDetail(documentId) {
+  const response = await fetch(`${API_URL}/documents/${documentId}`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not fetch document detail");
+  }
+
+  return response.json();
+}
+
+export async function uploadDocument(file) {
   const formData = new FormData();
   formData.append("file", file);
 
   const response = await fetch(`${API_URL}/documents/upload`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
     body: formData,
   });
 
@@ -77,31 +104,10 @@ export async function uploadDocument(file) {
   return response.json();
 }
 
-export async function getDocuments() {
-  const token = localStorage.getItem("token");
-
-  const response = await fetch(`${API_URL}/documents`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Could not fetch documents");
-  }
-
-  return response.json();
-}
-
 export async function deleteDocument(documentId) {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${API_URL}/documents/${documentId}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -111,34 +117,17 @@ export async function deleteDocument(documentId) {
   return response.json();
 }
 
-export async function getDocumentDetail(documentId) {
-  const token = localStorage.getItem("token");
-
-  const response = await fetch(`${API_URL}/documents/${documentId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Could not fetch document detail");
-  }
-
-  return response.json();
-}
+// AI / RAG
 
 export async function askDocuments(question, topK = 5) {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${API_URL}/documents/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({
-      question: question,
+      question,
       top_k: topK,
     }),
   });

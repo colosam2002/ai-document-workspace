@@ -4,60 +4,43 @@ Full-stack AI workspace to upload documents, search knowledge, and chat with fil
 
 ## Current Status
 
-First git push:
+The application currently supports:
+- authenticated document workspaces
+- AI-powered semantic search
+- chat with uploaded documents
+- source-aware RAG responses
+- multi-page frontend workspace UI
 
-- FastAPI backend
-- React frontend
-- PostgreSQL connection
-- User registration
-- JWT login
-- Protected dashboard
-- Logout flow
+## Current Features
 
-Second git push:
+- User authentication with JWT
+- Upload TXT and PDF documents
+- Automatic text extraction
+- Document chunking and embeddings
+- Semantic search over uploaded files
+- RAG-based document chat
+- User-isolated document workspaces
+- React frontend workspace UI
+- Dashboard with workspace statistics
+- Source-aware AI answers
 
-- User authentication
-- Protected dashboard
-- Document upload from frontend
-- Document metadata stored in PostgreSQL
-- Uploaded files stored locally
-- User-specific document listing
-- User-specific document deletion
+## Architecture
 
-Third git push:
-
-- Text extraction from `.txt` files
-- Text extraction from basic PDFs
-- Processing status per document
-- Document detail view
-- Extracted text visible from frontend
-- User isolation for document detail
-
-Fourth git push:
-
-- Document chunking
-- Chunk storage in PostgreSQL
-- OpenAI embeddings per chunk
-- Semantic search over document chunks
-- User-specific retrieval
-- Protected `/documents/search` endpoint
-
-Fifth git push:
-
-- RAG chat endpoint
-- Context-aware answers using uploaded documents
-- Source chunks returned with each answer
-- Frontend chat page
-- Loading and error states
-- User-specific document chat
-
-## Stack
-
+Backend:
 - FastAPI
-- React
 - PostgreSQL
 - SQLAlchemy
-- JWT Authentication
+- OpenAI API
+
+Frontend:
+- React
+- React Router
+- Fetch API
+
+AI Features:
+- Embeddings
+- Semantic search
+- Retrieval-Augmented Generation (RAG)
 
 ## Running the Backend
 

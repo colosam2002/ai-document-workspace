@@ -1,5 +1,13 @@
 import { useState } from "react";
 import { askDocuments } from "../api/client";
+import MessageBox from "../components/ui/MessageBox";
+
+const exampleQuestions = [
+  "What is this document mainly about?",
+  "Summarize the key ideas from my documents.",
+  "What does the document say about authentication?",
+  "Which parts mention databases or storage?",
+];
 
 function ChatPage() {
   const [question, setQuestion] = useState("");
@@ -44,6 +52,30 @@ function ChatPage() {
         Ask questions about the documents you have uploaded to your workspace.
       </p>
 
+      <section
+        style={{
+          marginTop: "2rem",
+          padding: "1rem",
+          backgroundColor: "white",
+          border: "1px solid #ddd",
+          borderRadius: "12px",
+        }}
+      >
+        <h2>Example questions</h2>
+
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {exampleQuestions.map((example) => (
+            <button
+              key={example}
+              type="button"
+              onClick={() => setQuestion(example)}
+            >
+              {example}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <form
         onSubmit={handleSubmit}
         style={{
@@ -64,7 +96,7 @@ function ChatPage() {
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           rows="5"
-          placeholder="Example: What does this document say about authentication?"
+          placeholder="Ask something about your uploaded documents..."
           style={{
             width: "100%",
             marginTop: "0.5rem",
@@ -73,8 +105,10 @@ function ChatPage() {
           }}
         />
 
-        <br />
-        <br />
+        <p style={{ color: "#666", marginTop: "0.5rem" }}>
+          The assistant will answer using only your uploaded and processed
+          documents.
+        </p>
 
         <label>
           <strong>Number of sources</strong>
@@ -100,36 +134,45 @@ function ChatPage() {
         </button>
 
         {isLoading && (
-          <p style={{ marginTop: "1rem", color: "#666" }}>
+          <MessageBox type="info">
             Searching your documents and generating an answer...
-          </p>
+          </MessageBox>
         )}
       </form>
 
-      {message && (
-        <p
-          style={{
-            marginTop: "1rem",
-            color: "#b91c1c",
-          }}
-        >
-          {message}
-        </p>
-      )}
+      {message && <MessageBox type="error">{message}</MessageBox>}
 
       {answer && (
         <section
           style={{
             marginTop: "2rem",
-            padding: "1rem",
+            padding: "1.25rem",
             backgroundColor: "white",
             border: "1px solid #ddd",
             borderRadius: "12px",
           }}
         >
           <h2>Answer</h2>
-          <p style={{ whiteSpace: "pre-wrap" }}>{answer}</p>
+
+          <div
+            style={{
+              padding: "1rem",
+              backgroundColor: "#f9fafb",
+              borderRadius: "8px",
+              whiteSpace: "pre-wrap",
+              lineHeight: "1.6",
+            }}
+          >
+            {answer}
+          </div>
         </section>
+      )}
+
+      {answer && sources.length === 0 && (
+        <MessageBox type="warning">
+          No sources were returned. The answer may indicate that there was not
+          enough information in your documents.
+        </MessageBox>
       )}
 
       {sources.length > 0 && (
@@ -142,10 +185,11 @@ function ChatPage() {
             borderRadius: "12px",
           }}
         >
-          <h2>Sources</h2>
+          <h2>Sources used</h2>
 
           <p style={{ color: "#666" }}>
-            These are the document chunks used to generate the answer.
+            These are the chunks retrieved from your documents and used as
+            context.
           </p>
 
           <ul style={{ paddingLeft: 0, listStyle: "none" }}>
@@ -173,8 +217,8 @@ function ChatPage() {
                     marginTop: "0.5rem",
                   }}
                 >
-                  {source.content.length > 500
-                    ? `${source.content.slice(0, 500)}...`
+                  {source.content.length > 600
+                    ? `${source.content.slice(0, 600)}...`
                     : source.content}
                 </p>
               </li>
