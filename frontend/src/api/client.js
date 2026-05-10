@@ -119,21 +119,40 @@ export async function deleteDocument(documentId) {
 
 // AI / RAG
 
-export async function askDocuments(question, topK = 5) {
+export async function askDocuments(question, topK = 5, documentId = null) {
+  const body = {
+    question,
+    top_k: topK,
+  };
+
+  if (documentId) {
+    body.document_id = Number(documentId);
+  }
+
   const response = await fetch(`${API_URL}/documents/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...getAuthHeaders(),
     },
-    body: JSON.stringify({
-      question,
-      top_k: topK,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
     throw new Error("Could not ask documents");
+  }
+
+  return response.json();
+}
+
+export async function generateDocumentSummary(documentId) {
+  const response = await fetch(`${API_URL}/documents/${documentId}/summary`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not generate document summary");
   }
 
   return response.json();

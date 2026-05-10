@@ -15,6 +15,7 @@ from app.schemas import (
     DocumentSearchResponse,
     DocumentChatRequest,
     DocumentChatResponse,
+    DocumentSummaryResponse
 )
 from app.services.extraction_service import extract_text
 from app.services.chunking_service import split_text_into_chunks
@@ -23,6 +24,7 @@ from app.services.rag_service import (
     search_relevant_chunks,
     answer_question_with_documents,
 )
+from app.services.ai_service import summarize_document_text
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -147,6 +149,7 @@ def chat_with_documents(
         question=data.question,
         current_user=current_user,
         top_k=data.top_k,
+        document_id=data.document_id,
     )
 
     return result
@@ -164,6 +167,41 @@ def list_documents(
     )
 
     return documents
+
+@router.post("/{document_id}/summary", response_model=DocumentSummaryResponse)
+def summarize_document(
+    document_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserDB = Depends(get_current_user),
+):
+    document = (
+        db.query(DocumentDB)
+        .filter(
+            DocumentDB.id == document_id,
+            DocumentDB.owner_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not document:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
+
+    if document.processing_status != "processed" or not document.extracted_text:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Document has no extracted text available",
+        )
+
+    summary = summarize_document_text(document.extracted_text)
+
+    return {
+        "document_id": document.id,
+        "filename": document.filename,
+        "summary": summary,
+    }
 
 @router.get("/{document_id}", response_model=DocumentDetailResponse)
 def get_document_detail(
@@ -218,4 +256,5 @@ def delete_document(
         os.remove(file_path)
 
     return {"message": "Document deleted successfully"}
+
 

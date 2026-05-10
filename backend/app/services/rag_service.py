@@ -25,16 +25,21 @@ def search_relevant_chunks(
     query: str,
     current_user: UserDB,
     top_k: int = 5,
+    document_id: int | None = None,
 ) -> list[dict]:
     query_embedding = create_embedding(query)
 
-    chunks = (
+    query_db = (
         db.query(DocumentChunkDB)
         .join(DocumentDB)
         .filter(DocumentDB.owner_id == current_user.id)
         .filter(DocumentChunkDB.embedding.isnot(None))
-        .all()
     )
+
+    if document_id is not None:
+        query_db = query_db.filter(DocumentDB.id == document_id)
+
+    chunks = query_db.all()
 
     scored_chunks = []
 
@@ -56,7 +61,23 @@ def search_relevant_chunks(
 
     scored_chunks.sort(key=lambda item: item["score"], reverse=True)
 
-    return scored_chunks[:top_k]
+    MINIMUM_SIMILARITY_SCORE = 0.45
+
+    filtered_chunks = [
+        chunk
+        for chunk in scored_chunks
+        if chunk["score"] >= MINIMUM_SIMILARITY_SCORE
+    ]
+
+    print("\n--- TOP CHUNKS ---")
+
+    for chunk in filtered_chunks[:top_k]:
+        print(
+            f"[{chunk['filename']}] "
+            f"score={chunk['score']:.3f}"
+        )
+
+    return filtered_chunks[:top_k]
 
 def build_context_from_chunks(chunks: list[dict]) -> str:
     context_parts = []
@@ -79,17 +100,22 @@ def answer_question_with_documents(
     question: str,
     current_user: UserDB,
     top_k: int = 5,
+    document_id: int | None = None,
 ) -> dict:
     relevant_chunks = search_relevant_chunks(
         db=db,
         query=question,
         current_user=current_user,
         top_k=top_k,
+        document_id=document_id,
     )
 
     if not relevant_chunks:
         return {
-            "answer": "I don't have enough information in your documents to answer that question.",
+            "answer": (
+                "I could not find enough relevant information in your "
+                "documents to answer that question."
+            ),
             "sources": [],
         }
 

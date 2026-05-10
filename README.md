@@ -5,11 +5,20 @@ Full-stack AI workspace to upload documents, search knowledge, and chat with fil
 ## Current Status
 
 The application currently supports:
-- authenticated document workspaces
-- AI-powered semantic search
-- chat with uploaded documents
-- source-aware RAG responses
-- multi-page frontend workspace UI
+
+- User authentication with JWT
+- User-isolated document workspaces
+- TXT and PDF document upload
+- Automatic text extraction
+- Document chunking
+- OpenAI embeddings
+- Semantic search over document chunks
+- RAG chat with uploaded documents
+- Chat across all documents or a selected document
+- Source-aware answers
+- Visual chat history during the session
+- Automatic document summaries
+- Similarity threshold to reduce irrelevant answers
 
 ## Current Features
 
@@ -60,8 +69,9 @@ npm run dev
 
 ## Next Steps
 
-- Store chat history
-- Improve workspace UX
-- Add document selection for chat
-- Add summaries and advanced document actions
-- Prepare for deployment
+- Prepare production deployment
+- Improve environment configuration
+- Add persistent chat history
+- Add document-level metadata
+- Add better styling and responsive layout
+- Consider pgvector for scalable vector search
