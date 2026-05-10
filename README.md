@@ -135,3 +135,10 @@ The application currently supports authenticated document workspaces, document u
 - Automated tests
 - Document collections and tags
 - More advanced citation UI
+
+## Author
+
+Built by Colomán Samprón as a full-stack AI engineering portfolio project.
+
+- GitHub: https://github.com/colosam2002
+- LinkedIn: https://linkedin.com/in/colomán-samprón-garcía-47487634a
