@@ -138,7 +138,7 @@ The application currently supports authenticated document workspaces, document u
 
 ## Author
 
-Built by Colomán Samprón as a full-stack AI engineering portfolio project.
+Built by Colomán Samprón as a portfolio and learning project exploring modern backend and frontend development, LLM integrations, and retrieval-augmented generation (RAG).
 
 - GitHub: https://github.com/colosam2002
 - LinkedIn: https://linkedin.com/in/colomán-samprón-garcía-47487634a
