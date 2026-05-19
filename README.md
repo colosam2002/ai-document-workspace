@@ -117,12 +117,6 @@ Create frontend/.env:
 VITE_API_URL=http://127.0.0.1:8000
 ```
 
-## Current Status
-
-Completed as a full-stack AI project.
-
-The application currently supports authenticated document workspaces, document upload, text extraction, embeddings, semantic search, RAG chat, document summaries, and a React-based workspace UI.
-
 ### Future Improvements
 
 - Persistent chat history
@@ -138,7 +132,7 @@ The application currently supports authenticated document workspaces, document u
 
 ## Author
 
-Built by Colomán Samprón as a portfolio and learning project exploring modern backend and frontend development, LLM integrations, and retrieval-augmented generation (RAG).
+Built by Colomán Samprón as a learning project exploring modern backend and frontend development, LLM integrations, and retrieval-augmented generation (RAG).
 
 - GitHub: https://github.com/colosam2002
 - LinkedIn: https://linkedin.com/in/colomán-samprón-garcía-47487634a
